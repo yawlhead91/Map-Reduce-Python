@@ -15,6 +15,22 @@
 import sys
 import codecs
 
+def process_line(line):
+    # Return dic
+    rtn = dict()
+    # Tokenize words
+    tokens = line.split(' ')
+
+    # Check for the arabic case, thus the tokens
+    # will be entered in a opposite index
+    if tokens[0].isdigit():
+        tokens = tokens[::-1]
+
+    rtn['lang'] = tokens[0]
+    rtn['page'] = tokens[1]
+    rtn['view'] = tokens[2]
+
+    return rtn
 
 
 
@@ -22,6 +38,10 @@ import codecs
 # FUNCTION my_map
 # ------------------------------------------
 def my_map(input_stream, languages, num_top_entries, output_stream):
+
+    for line in input_stream:
+        record = process_line(line)
+        break
     pass
 
 # ------------------------------------------
@@ -53,7 +73,7 @@ if __name__ == '__main__':
     # 1. Input parameters
     debug = True
 
-    i_file_name = "pageviews-20180219-100000_0.txt"
+    i_file_name = "../my_dataset/pageviews-20180219-100000_0.txt"
     o_file_name = "mapResult.txt"
 
     languages = ["en", "es", "fr"]
