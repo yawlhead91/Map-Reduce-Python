@@ -15,19 +15,30 @@
 import re
 import sys
 import codecs
+from itertools import groupby
 
 def get_key_value(line):
+
+    # Return dic
+    rtn = dict()
 
     line = line.replace('\n', '')
     # 1. Get rid of the end of line at the end of the string
     for ch in ['(',')']:
      line = line.replace(ch, '')
 
-    # 2. Split the string by the tabulator delimiter
-    words = re.split('\t|,', line)
+    # Remove the last comma deliter as in some cases the page
+    # title holds a comma delitier
+    line = line[::-1].replace(',', '\t', 1)[::-1]
 
-    print(words)
-    return
+    # 2. Split the string by the tabulator delimiter
+    tokens = line.split('\t')
+
+    rtn['lang'] = tokens[0]
+    rtn['page'] = tokens[1]
+    rtn['view'] = tokens[2]
+
+    return rtn
 
 
 # ------------------------------------------
@@ -35,10 +46,31 @@ def get_key_value(line):
 # ------------------------------------------
 def my_reduce(input_stream, num_top_entries, output_stream):
 
+    rtn = []
+    records = []
+
      # Here we get the tokenized dict for each
     # line
     for line in input_stream:
-        r = get_key_value(line)
+        records.append(get_key_value(line))
+
+    # Sort langs to be group for the groupby function
+    records.sort(key=lambda x:x['page'])
+
+    # Sort line first by grouping by langs which return a new 
+    # list for each then runing sorted lambda on the new list
+    # on view finally appending to return list
+    # for k, v in groupby(records,key=lambda x:x['page']):
+    #     for key in v:
+    #         print key['view']
+        #s = sum(int(item['view']) for item in list(v))
+
+
+    # # Write field to output4 stream
+    # for i in rtn:
+    #     res = i['lang'] + '\t' + '(' + i['page'] + ',' + i['view'] + ')' + '\n'
+    #     output_stream.write(res)
+    
 
     pass
 
