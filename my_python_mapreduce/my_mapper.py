@@ -14,6 +14,7 @@
 
 import sys
 import codecs
+from itertools import groupby
 
 def process_line(line):
     # Return dic
@@ -41,6 +42,7 @@ def my_map(input_stream, languages, num_top_entries, output_stream):
 
     # This is an array of records in regards to
     # languages provided
+    rtn = []
     records = []
 
     # Here we get the tokenized dict for each
@@ -53,9 +55,22 @@ def my_map(input_stream, languages, num_top_entries, output_stream):
         for l in languages:
             if r['lang'].startswith(l):
                 records.append(r)
+
+    # Sort langs to be group for the groupby function
+    records.sort(key=lambda x:x['lang'])
+
+    # Sort line first by grouping by langs which return a new 
+    # list for each then runing sorted lambda on the new list
+    # on view finally appending to return list
+    for k,v in groupby(records,key=lambda x:x['lang']):
+        t = sorted(v, key=lambda k: k['view'])
+        if len(t) > 5:
+            rtn.append(t[-5:])
+        else:
+            rtn.append(t[-len(t):])
         
     
-
+    print(rtn)
 
 # ------------------------------------------
 # FUNCTION my_main
