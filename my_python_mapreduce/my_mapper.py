@@ -65,12 +65,17 @@ def my_map(input_stream, languages, num_top_entries, output_stream):
     for k,v in groupby(records,key=lambda x:x['lang']):
         t = sorted(v, key=lambda k: k['view'])
         if len(t) > 5:
-            rtn.append(t[-5:])
+            rtn = rtn + t[-5:]
         else:
-            rtn.append(t[-len(t):])
-        
+            rtn = rtn + t[-len(t):]
+
+
+    # Write field to output4 stream
+    for i in rtn:
+        res = i['lang'] + '\t' + '(' + i['page'] + ',' + i['view'] + ')' + '\n'
+        output_stream.write(res)
     
-    print(rtn)
+    
 
 # ------------------------------------------
 # FUNCTION my_main
