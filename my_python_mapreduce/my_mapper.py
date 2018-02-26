@@ -63,11 +63,14 @@ def my_map(input_stream, languages, num_top_entries, output_stream):
     # list for each then runing sorted lambda on the new list
     # on view finally appending to return list
     for k,v in groupby(records,key=lambda x:x['lang']):
+        r = []
         t = sorted(v, key=lambda k: k['view'])
         if len(t) > 5:
-            rtn = rtn + t[-5:]
+            r = t[-5:]
         else:
-            rtn = rtn + t[-len(t):]
+            r = t[-len(t):]
+        
+        rtn = rtn + r[::-1]
 
 
     # Write field to output4 stream
