@@ -12,16 +12,34 @@
 # but it will execute nothing yet.
 # --------------------------------------------------------
 
+import re
 import sys
 import codecs
 
+def get_key_value(line):
 
+    line = line.replace('\n', '')
+    # 1. Get rid of the end of line at the end of the string
+    for ch in ['(',')']:
+     line = line.replace(ch, '')
+
+    # 2. Split the string by the tabulator delimiter
+    words = re.split('\t|,', line)
+
+    print(words)
+    return
 
 
 # ------------------------------------------
 # FUNCTION my_reduce
 # ------------------------------------------
 def my_reduce(input_stream, num_top_entries, output_stream):
+
+     # Here we get the tokenized dict for each
+    # line
+    for line in input_stream:
+        r = get_key_value(line)
+
     pass
 
 # ------------------------------------------
