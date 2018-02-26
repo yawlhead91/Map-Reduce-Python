@@ -39,10 +39,23 @@ def process_line(line):
 # ------------------------------------------
 def my_map(input_stream, languages, num_top_entries, output_stream):
 
+    # This is an array of records in regards to
+    # languages provided
+    records = []
+
+    # Here we get the tokenized dict for each
+    # line
     for line in input_stream:
-        record = process_line(line)
-        break
-    pass
+        r = process_line(line)
+
+        # Here we check to see if the record
+        # is one of the languages provided
+        for l in languages:
+            if r['lang'].startswith(l):
+                records.append(r)
+        
+    
+
 
 # ------------------------------------------
 # FUNCTION my_main
