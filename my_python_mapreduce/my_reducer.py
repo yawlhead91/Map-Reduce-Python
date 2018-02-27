@@ -47,32 +47,56 @@ def get_key_value(line):
 def my_reduce(input_stream, num_top_entries, output_stream):
 
     rtn = []
-    records = []
+    _lang_sorted_records = []
+
 
      # Here we get the tokenized dict for each
     # line
     for line in input_stream:
-        records.append(get_key_value(line))
+        _lang_sorted_records.append(get_key_value(line))
 
     # Sort langs to be group for the groupby function
-    records.sort(key=lambda x:x['page'])
+    _lang_sorted_records.sort(key=lambda x:x['lang'])
+    #print _lang_sorted_records
 
+    
     # Sort line first by grouping by langs which return a new 
     # list for each then runing sorted lambda on the new list
     # on view finally appending to return list
-    # for k, v in groupby(records,key=lambda x:x['page']):
-    #     for key in v:
-    #         print key['view']
-        #s = sum(int(item['view']) for item in list(v))
+    for k,v in groupby(_lang_sorted_records,key=lambda x:x['lang']):
 
+        _page_group_sum = []
 
-    # # Write field to output4 stream
-    # for i in rtn:
-    #     res = i['lang'] + '\t' + '(' + i['page'] + ',' + i['view'] + ')' + '\n'
-    #     output_stream.write(res)
+        l = list(v) # convert group interator
+        l.sort(key=lambda x:x['page']) # sort again for next group
+
+        for i, m in groupby(l,key=lambda x:x['page']):
+            a = list(m)
+            s = sum(int(item['view']) for item in a)
+
+            _page_group_sum.append({
+                'lang': k,
+                'page': i,
+                'view': s
+            })
+        
+        r = []
+        t = sorted(_page_group_sum, key=lambda k: k['view'])
+        if len(t) > 5:
+            r = t[-5:]
+        else:
+            r = t[-len(t):]
+        
+        rtn = rtn + r[::-1]
+
+    
+    # Write field to output stream
+    for i in rtn:
+        res = i['lang'] + '\t' + '(' + i['page'] + ',' + str(i['view']) + ')' + '\n'
+        output_stream.write(res)
     
 
-    pass
+    return
 
 # ------------------------------------------
 # FUNCTION my_main
