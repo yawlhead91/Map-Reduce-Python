@@ -34,9 +34,9 @@ def get_key_value(line):
     # 2. Split the string by the tabulator delimiter
     tokens = line.split('\t')
 
-    rtn['lang'] = tokens[0]
-    rtn['page'] = tokens[1]
-    rtn['view'] = tokens[2]
+    rtn['projects'] = tokens[0]
+    rtn['views'] = tokens[1]
+    rtn['percentage'] = tokens[2]
 
     return rtn
 
@@ -46,7 +46,7 @@ def get_key_value(line):
 # ------------------------------------------
 def my_reduce(input_stream, num_top_entries, output_stream):
 
-    rtn = []
+    rtn = {}
     _lang_sorted_records = []
 
 
@@ -56,44 +56,25 @@ def my_reduce(input_stream, num_top_entries, output_stream):
         _lang_sorted_records.append(get_key_value(line))
 
     # Sort langs to be group for the groupby function
-    _lang_sorted_records.sort(key=lambda x:x['lang'])
+    _lang_sorted_records.sort(key=lambda x:x['projects'])
     #print _lang_sorted_records
 
     
     # Sort line first by grouping by langs which return a new 
     # list for each then runing sorted lambda on the new list
     # on view finally appending to return list
-    for k,v in groupby(_lang_sorted_records,key=lambda x:x['lang']):
+    for k,v in groupby(_lang_sorted_records,key=lambda x:x['projects']):
 
-        _page_group_sum = []
+        rtn[k] = (0.0, 0.0)
 
-        l = list(v) # convert group interator
-        l.sort(key=lambda x:x['page']) # sort again for next group
-
-        for i, m in groupby(l,key=lambda x:x['page']):
-            a = list(m)
-            s = sum(int(item['view']) for item in a)
-
-            _page_group_sum.append({
-                'lang': k,
-                'page': i,
-                'view': s
-            })
-        
-        r = []
-        t = sorted(_page_group_sum, key=lambda k: k['view'])
-        if len(t) > 5:
-            r = t[-5:]
-        else:
-            r = t[-len(t):]
-        
-        rtn = rtn + r[::-1]
+        for record in v:
+            print(i)
 
     
-    # Write field to output stream
-    for i in rtn:
-        res = i['lang'] + '\t' + '(' + i['page'] + ',' + str(i['view']) + ')' + '\n'
-        output_stream.write(res)
+    # # Write field to output stream
+    # for i in rtn:
+    #     res = i['lang'] + '\t' + '(' + i['page'] + ',' + str(i['view']) + ')' + '\n'
+    #     output_stream.write(res)
     
 
     return
@@ -128,7 +109,7 @@ if __name__ == '__main__':
     debug = True
 
     i_file_name = "sort_simulation.txt"
-    o_file_name = "reduce_simulation.txt"
+    o_file_name = "../reduce_simulation_projects.txt"
 
     num_top_entries = 5
 

@@ -77,7 +77,7 @@ def my_main(i_file_name, o_file_name):
 # ---------------------------------------------------------------
 if __name__ == '__main__':
     # 1. Input parameters
-    i_file_name = "map_simulation.txt"
+    i_file_name = "map_simulation_projects.txt"
     o_file_name = "sort_simulation.txt"
 
     # 2. Call to the function
