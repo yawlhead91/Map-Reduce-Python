@@ -128,7 +128,7 @@ if __name__ == '__main__':
     debug = True
 
     i_file_name = "sort_simulation.txt"
-    o_file_name = "../reduce_simulation_round_2.txt"
+    o_file_name = "reduce_simulation.txt"
 
     num_top_entries = 5
 

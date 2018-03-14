@@ -13,7 +13,7 @@
 # --------------------------------------------------------
 
 import os
-import my_mapper_language
+import my_mapper
 import codecs
 
 #------------------------------------------
@@ -103,7 +103,7 @@ def simulating_my_map(directory, extension, output_stream, languages, num_top_en
         input_stream = codecs.open(input_files[i], "r", encoding='utf-8')
 
         # 3.2. We process it
-        my_mapper_language.my_map(input_stream, languages, num_top_entries, output_stream)
+        my_mapper.my_map(input_stream, languages, num_top_entries, output_stream)
 
         # 3.3. We close the file
         input_stream.close()
@@ -136,7 +136,7 @@ def my_main(ext, o_file_name, languages, num_top_entries):
 if __name__ == '__main__':
     # 1. Input parameters
     ext = "txt"
-    o_file_name = "map_simulation_language.txt"
+    o_file_name = "map_simulation.txt"
     languages = ["en", "es", "fr"]
     num_top_entries = 5
 
