@@ -43,10 +43,11 @@ def my_map(input_stream, languages, num_top_entries, output_stream):
     # This is an array of records in regards to
     # languages provided
     rtn = {}
-
+    
     # Here we get the tokenized dict for each
     # line
     for line in input_stream:
+        
         r = process_line(line)
 
         # Here we check to see if the record
@@ -61,10 +62,12 @@ def my_map(input_stream, languages, num_top_entries, output_stream):
                 rtn[lang].append(r)
 
                 # Sort langs to be group for the groupby function
-                rtn[lang].sort(key=lambda x:x['view'])
-                if len(rtn[lang]) > 5:
-                    rtn[lang] = rtn[lang][-5:]
+                rtn[lang] = sorted(rtn[lang], key=lambda x: int(x['view']))
 
+                if len(rtn[lang]) > num_top_entries:
+                    rtn[lang] = rtn[lang][num_top_entries:]
+                    
+            
                 break
 
 

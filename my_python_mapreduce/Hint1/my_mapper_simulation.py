@@ -99,6 +99,7 @@ def simulating_my_map(directory, extension, output_stream, languages, num_top_en
 
     # 2. We process them
     for i in range(0, len(input_files)):
+
         # 3.1. We open the file to be read
         input_stream = codecs.open(input_files[i], "r", encoding='utf-8')
 
