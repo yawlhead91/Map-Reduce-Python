@@ -34,7 +34,7 @@ def get_key_value(line):
     # 2. Split the string by the tabulator delimiter
     tokens = line.split('\t')
 
-    rtn['projects'] = tokens[0]
+    rtn['item'] = tokens[0]
     rtn['views'] = tokens[1]
     rtn['percentage'] = tokens[2]
 
@@ -44,37 +44,28 @@ def get_key_value(line):
 # ------------------------------------------
 # FUNCTION my_reduce
 # ------------------------------------------
-def my_reduce(input_stream, num_top_entries, output_stream):
+def my_reduce(input_stream, target, output_stream):
 
     rtn = {}
-    _lang_sorted_records = []
-
 
      # Here we get the tokenized dict for each
     # line
     for line in input_stream:
-        _lang_sorted_records.append(get_key_value(line))
+        k = get_key_value(line)
 
-    # Sort langs to be group for the groupby function
-    _lang_sorted_records.sort(key=lambda x:x['projects'])
-    #print _lang_sorted_records
-
-    
-    # Sort line first by grouping by langs which return a new 
-    # list for each then runing sorted lambda on the new list
-    # on view finally appending to return list
-    for k,v in groupby(_lang_sorted_records,key=lambda x:x['projects']):
-
-        rtn[k] = (0.0, 0.0)
-
-        for record in v:
-            print(i)
+        # Add the return data fields
+        if k['item'] not in rtn:
+            rtn[k['item']] = (0.0,0.0)
+        
+        views = float(rtn[k['item']][0]) + float(k['views'])
+        percentage = float(rtn[k['item']][1]) + float(k['percentage'])
+        rtn[k['item']] = (int(views), percentage)
 
     
-    # # Write field to output stream
-    # for i in rtn:
-    #     res = i['lang'] + '\t' + '(' + i['page'] + ',' + str(i['view']) + ')' + '\n'
-    #     output_stream.write(res)
+    # Write field to output4 stream
+    for i in rtn:
+        res = i + '\t' + '(' + str(rtn[i][0]) + ', ' + str(rtn[i][1]) + '%)' + '\n'
+        output_stream.write(res)
     
 
     return
@@ -82,7 +73,7 @@ def my_reduce(input_stream, num_top_entries, output_stream):
 # ------------------------------------------
 # FUNCTION my_main
 # ------------------------------------------
-def my_main(debug, i_file_name, o_file_name, num_top_entries):
+def my_main(debug, i_file_name, o_file_name, target):
     # We pick the working mode:
 
     # Mode 1: Debug --> We pick a file to read test the program on it
@@ -95,7 +86,7 @@ def my_main(debug, i_file_name, o_file_name, num_top_entries):
         my_output_stream = sys.stdout
 
     # We launch the Map program
-    my_reduce(my_input_stream, num_top_entries, my_output_stream)
+    my_reduce(my_input_stream, target, my_output_stream)
 
 # ---------------------------------------------------------------
 #           PYTHON EXECUTION
@@ -109,8 +100,14 @@ if __name__ == '__main__':
     debug = True
 
     i_file_name = "sort_simulation.txt"
-    o_file_name = "../reduce_simulation_projects.txt"
+    o_file_name = "reduce_simulation_projects.txt"
 
-    num_top_entries = 5
+    calc = ['project', 'lang']
 
-    my_main(debug, i_file_name, o_file_name, num_top_entries)
+    for target in calc:
+        ii_file_name = target + '_' + i_file_name
+        oo_file_name = target + '_' + o_file_name
+        my_main(debug, ii_file_name, oo_file_name, target)
+
+
+    

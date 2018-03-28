@@ -30,11 +30,11 @@ def process_line(line):
     if tokens[0].isdigit():
         tokens = tokens[::-1]
 
-    rtn['lang'] = tokens[0]
-
-    split = rtn['lang'].rsplit('.', 1)
+    
+    split = tokens[0].rsplit('.')
+    rtn['lang'] = split[0]
     if len(split) > 1:
-        rtn['project'] = rtn['lang'].rsplit('.', 1)[-1]
+        rtn['project'] = split[-1]
     else:
         rtn['project'] = 'Wikipedia'
      
@@ -48,47 +48,37 @@ def process_line(line):
 # ------------------------------------------
 # FUNCTION my_map
 # ------------------------------------------
-def my_map(input_stream, languages, num_top_entries, output_stream):
+def my_map(input_stream, target, output_stream):
 
     # This is an array of records in regards to
     # languages provided
     rtn = {}
-    records = []
 
     # Here we get the tokenized dict for each
     # line
     for line in input_stream:
         r = process_line(line)
-        records.append(r)
-    
-    # Sort langs to be group for the groupby function
-    records.sort(key=lambda x:x['project'])
-
-    # Sort line first by grouping by langs which return a new 
-    # list for each then runing sorted lambda on the new list
-    # on view finally appending to return list
-    for k,v in groupby(records,key=lambda x:x['project']):
-        t = sorted(v, key=lambda k: int(k['view']))
-        rtn[k] = (0.0,0.0) 
-        for i in t:
-            views =  float(rtn[k][0]) + float(i['view'])
-            rtn[k] = (views, 0)
+        
+        # Add the return data fields
+        if r[target] not in rtn:
+            rtn[r[target]] = (0.0,0.0) 
 
         
-        percentage = (rtn[k][0]/total_views)*100
-        rtn[k] = (int(rtn[k][0]), percentage)
+        views = float(rtn[r[target]][0]) + float(r['view'])
+        percentage = (views/total_views)*100
+        rtn[r[target]] = (int(views), percentage)
+    
 
     # Write field to output4 stream
-    for lang in rtn:
-        res = lang + '\t' + '(' + str(rtn[lang][0]) + ', ' + str(rtn[lang][1]) + ')' + '\n'
+    for i in rtn:
+        res = i + '\t' + '(' + str(rtn[i][0]) + ', ' + str(rtn[i][1]) + ')' + '\n'
         output_stream.write(res)
-    
     
 
 # ------------------------------------------
 # FUNCTION my_main
 # ------------------------------------------
-def my_main(debug, i_file_name, o_file_name, languages, num_top_entries):
+def my_main(debug, i_file_name, o_file_name, target):
     # We pick the working mode:
 
     # Mode 1: Debug --> We pick a file to read test the program on it
@@ -101,7 +91,7 @@ def my_main(debug, i_file_name, o_file_name, languages, num_top_entries):
         my_output_stream = sys.stdout
 
     # We launch the Map program
-    my_map(my_input_stream, languages, num_top_entries, my_output_stream)
+    my_map(my_input_stream, target, my_output_stream)
 
 # ---------------------------------------------------------------
 #           PYTHON EXECUTION
@@ -114,11 +104,11 @@ if __name__ == '__main__':
     # 1. Input parameters
     debug = True
 
-    i_file_name = "../../my_dataset/pageviews-20180219-100000_0.txt"
+    calc = ['project', 'lang']
+
+    i_file_name = "../../../my_dataset/pageviews-20180219-100000_0.txt"
     o_file_name = "mapResult.txt"
 
-    languages = ["en", "es", "fr"]
-    num_top_entries = 5
-
-    # 2. Call to the function
-    my_main(debug, i_file_name, o_file_name, languages, num_top_entries)
+    for target in calc:
+        o_file_name = target + '_' + o_file_name
+        my_main(debug, i_file_name, o_file_name, target)

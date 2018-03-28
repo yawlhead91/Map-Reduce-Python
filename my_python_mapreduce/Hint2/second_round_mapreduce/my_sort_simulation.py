@@ -77,8 +77,14 @@ def my_main(i_file_name, o_file_name):
 # ---------------------------------------------------------------
 if __name__ == '__main__':
     # 1. Input parameters
-    i_file_name = "map_simulation_projects.txt"
+    
+    i_file_name = "map_simulation.txt"
     o_file_name = "sort_simulation.txt"
 
-    # 2. Call to the function
-    my_main(i_file_name, o_file_name)
+    calc = ['project', 'lang']
+
+    for target in calc:
+        ii_file_name = target + '_' + i_file_name
+        oo_file_name = target + '_' + o_file_name
+        my_main(ii_file_name, oo_file_name)
+    

@@ -13,7 +13,7 @@
 # --------------------------------------------------------
 
 import os
-import my_mapper_projects
+import my_mapper
 import codecs
 
 #------------------------------------------
@@ -72,9 +72,7 @@ def get_file_extension(file_name):
 #------------------------------------------
 def select_files_from_directory_with_concrete_extension(directory, extension):
     # 1. We get the current directory and ask for all its elements
-    os.chdir(directory)
-    dir = os.getcwd()
-    files = os.listdir(dir)
+    files = os.listdir(directory)
 
     # 2. We create a list with all files we are interested at
     # Initially, the list is empty
@@ -93,17 +91,16 @@ def select_files_from_directory_with_concrete_extension(directory, extension):
 # ------------------------------------------
 # FUNCTION simulating_my_map
 # ------------------------------------------
-def simulating_my_map(directory, extension, output_stream, languages, num_top_entries):
+def simulating_my_map(directory, extension, output_stream, target, num_top_entries):
     # 1. We get the files to be processed
     input_files = select_files_from_directory_with_concrete_extension(directory, extension)
-
     # 2. We process them
     for i in range(0, len(input_files)):
         # 3.1. We open the file to be read
-        input_stream = codecs.open(input_files[i], "r", encoding='utf-8')
+        input_stream = codecs.open(directory+'/'+input_files[i], "r", encoding='utf-8')
 
         # 3.2. We process it
-        my_mapper_projects.my_map(input_stream, languages, num_top_entries, output_stream)
+        my_mapper.my_map(input_stream, target, output_stream)
 
         # 3.3. We close the file
         input_stream.close()
@@ -111,17 +108,17 @@ def simulating_my_map(directory, extension, output_stream, languages, num_top_en
 # ------------------------------------------
 # FUNCTION my_main
 # ------------------------------------------
-def my_main(ext, o_file_name, languages, num_top_entries):
+def my_main(ext, o_file_name, target, num_top_entries):
     # 1. Set the directory
     current_dir = os.getcwd()
     # Change this tp relative path for mac :D
-    dataset_dir = "../../my_dataset"
+    dataset_dir = "../../../my_dataset"
 
     # 2. We open the file for writing
     output_file = codecs.open(o_file_name, "w", encoding='utf-8')
 
     # 3. We trigger the map_simulation
-    simulating_my_map(dataset_dir, ext, output_file, languages, num_top_entries)
+    simulating_my_map(dataset_dir, ext, output_file, target, num_top_entries)
 
     # 4. We close the file
     output_file.close()
@@ -136,9 +133,15 @@ def my_main(ext, o_file_name, languages, num_top_entries):
 if __name__ == '__main__':
     # 1. Input parameters
     ext = "txt"
-    o_file_name = "map_simulation_projects.txt"
+    o_file_name = "map_simulation.txt"
     languages = ["en", "es", "fr"]
     num_top_entries = 5
 
-    # 2. Call to the function
-    my_main(ext, o_file_name, languages, num_top_entries)
+    calc = ['project', 'lang']
+
+    for target in calc:
+        oo_file_name = target + '_' + o_file_name
+        my_main(ext, oo_file_name, target, num_top_entries)
+
+
+    

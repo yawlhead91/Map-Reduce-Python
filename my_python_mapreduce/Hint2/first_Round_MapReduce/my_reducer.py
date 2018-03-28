@@ -32,12 +32,13 @@ def my_reduce(input_stream, output_stream):
 # FUNCTION my_main
 # ------------------------------------------
 def my_main(debug, i_file_name, o_file_name):
-    # We pick the working mode:
 
+    # We pick the working mode:
     # Mode 1: Debug --> We pick a file to read test the program on it
     if debug == True:
         my_input_stream = codecs.open(i_file_name, "r", encoding='utf-8')
         my_output_stream = codecs.open(o_file_name, "w", encoding='utf-8')
+        
     # Mode 2: Actual MapReduce --> We pick std.stdin and std.stdout
     else:
         my_input_stream = sys.stdin

@@ -66,8 +66,7 @@ def my_map(input_stream, languages, num_top_entries, output_stream):
 
                 if len(rtn[lang]) > num_top_entries:
                     rtn[lang] = rtn[lang][num_top_entries:]
-                    
-            
+
                 break
 
 
