@@ -63,8 +63,18 @@ def my_reduce(input_stream, target, output_stream):
 
     
     # Write field to output4 stream
-    for i in rtn:
-        res = i + '\t' + '(' + str(rtn[i][0]) + ', ' + str(rtn[i][1]) + '%)' + '\n'
+    # To sort the list in place...
+    r = []
+    for item in rtn:
+        t = {}
+        t['item'] = item
+        t['view'] = rtn[item][0]
+        t['perc'] = rtn[item][1]
+        r.append(t)
+
+    r = sorted(r, key=lambda x: x['perc'], reverse=True) 
+    for i in r:
+        res = i['item'] + '\t' + '(' + str(i['view']) + ', ' + str(i['perc']) + '%)' + '\n'
         output_stream.write(res)
     
 
