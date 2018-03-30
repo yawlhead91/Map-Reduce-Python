@@ -72,7 +72,8 @@ def my_reduce(input_stream, target, output_stream):
         t['perc'] = rtn[item][1]
         r.append(t)
 
-    r = sorted(r, key=lambda x: x['perc'], reverse=True) 
+    r = sorted(r, key=lambda x: x['perc'], reverse=True)
+
     for i in r:
         res = i['item'] + '\t' + '(' + str(i['view']) + ', ' + str(i['perc']) + '%)' + '\n'
         output_stream.write(res)
